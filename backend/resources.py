@@ -44,6 +44,7 @@ class TransactionResource(Resource):
         amount = data.get('amount')
         description = data.get('description')
         date = data.get('date')
+        transaction_type = data.get('transaction_type', 'expense')
 
         if isinstance(date, str):
             try:
@@ -51,7 +52,7 @@ class TransactionResource(Resource):
             except ValueError:
                 return make_response(jsonify({'message': 'Invalid date format. Please send an ISO formatted date string.'}), 400)
         user = User.query.filter_by(email=email).first()
-        new_transaction = Transaction(amount=amount, description=description, date=date,user_id=user.id)
+        new_transaction = Transaction(amount=amount, description=description, date=date, transaction_type=transaction_type, user_id=user.id)
         db.session.add(new_transaction)
         db.session.commit()
         return make_response(jsonify({'message': 'Transaction added successfully'}), 201)
@@ -67,7 +68,8 @@ class TransactionResource(Resource):
                 'id': txn.id,
                 'amount': txn.amount,
                 'description': txn.description,
-                'date': txn.date.isoformat()
+                'date': txn.date.isoformat(),
+                'transaction_type': txn.transaction_type
             }
             for txn in transactions
         ]

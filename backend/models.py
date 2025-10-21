@@ -20,6 +20,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Float, nullable=False)    
     description = db.Column(db.String(200))
     date = db.Column(db.DateTime, nullable=False)
+    transaction_type = db.Column(db.String(20), nullable=False, default='expense')  # 'income' or 'expense'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates="transactions", lazy=True)
 
