@@ -14,10 +14,16 @@ const Login = () => {
                 email: email,
                 password: password
             });
-
+            
             alert("Login successful!");
             // backend returns { access_token: <token> }
-            localStorage.setItem("token", response.data.access_token);
+            if (response?.data?.access_token) {
+                console.log("Received access token:", response.data.access_token);
+                localStorage.setItem("token", response.data.access_token);
+            } else {
+                // unexpected response shape — log it for debugging
+                console.warn('Login response missing access_token:', response.data);
+            }
             navigate("/dashboard");
         }catch(error){
             console.error("Login failed:", error.response.data);
